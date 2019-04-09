@@ -11,8 +11,8 @@
 <style>
 </style>
 
-<svg class="mapArea" height="500" width="1250" style="display: block; margin: 0 auto; background-color: lightsalmon"/>
-<svg class="dataArea" height="150" width="1250" style="display: block; margin: 0 auto; margin-top: 10px; background-color: lightgrey"/>
+<svg class="mapArea" height="500" width="1500" style="display: block; margin: 0 auto; background-color: lightsalmon"/>
+<svg class="dataArea" height="150" width="1500" style="display: block; margin: 0 auto; margin-top: 10px; background-color: lightgrey"/>
 
 <script>
   const map = d3.select(".mapArea");
@@ -26,7 +26,7 @@
   // CREATE AREA FOR US MAP and TRANSLATE
   const usMap = map.append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                    .attr("width", 580)
+                    .attr("width", 620)
                     .attr("height", mapHeight)
 
   const usHeight = Number(usMap.attr("height"));
@@ -35,7 +35,7 @@
   // CREATE AREA FOR MUSLIM BAN COUNTRIES AND TRANSLATE
   const muslimMap = map.append("g")
                         .attr("transform", "translate(" + (usWidth + margin.left + 20) + "," + margin.top + ")")
-                        .attr("width", 580)
+                        .attr("width", 620)
                         .attr("height", mapHeight);
 
   const visualizeData = async() => {
@@ -47,6 +47,27 @@
     // IMPORT IMMIGRATION DATASET
     const immigration = await d3.csv("../datasets/muslimBanImmigration.csv");
     console.log(immigration);
+
+    const usData = await d3.json("../datasets/us.json");
+      let states = topojson.feature(usData, usData.objects.states);
+      let project = d3.geoAlbersUsa().fitSize([usWidth, usHeight], states);
+      let path = d3.geoPath().projection(project);
+
+      usMap.selectAll("path").data(states.features)
+        .enter()
+        .append("path")
+        .attr("class", "state")
+        .style("fill", "white")
+        .style("stroke", "none")
+        .attr("d", path)
+        .attr("note", d => d.id);
+
+      usMap.append("path")
+        .datum(topojson.mesh(usData, usData.objects.states))
+        .style("stroke", "black")
+        .style("fill", "none")
+        .attr("note", d=> d.id)
+        .attr("d", path);
 
   }
 
