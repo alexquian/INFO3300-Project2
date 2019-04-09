@@ -8,5 +8,51 @@
 
 <h1>INFO 3300 Project 2</h1>
 
+<style>
+</style>
+
+<svg class="mapArea" height="500" width="1250" style="display: block; margin: 0 auto; background-color: lightsalmon"/>
+<svg class="dataArea" height="150" width="1250" style="display: block; margin: 0 auto; margin-top: 10px; background-color: lightgrey"/>
+
+<script>
+  const map = d3.select(".mapArea");
+  const mapH = map.attr("height");
+  const mapW = map.attr("width");
+  const margin = {top: 35, right: 35, bottom: 35, left: 35};
+
+  const mapHeight = mapH - margin.right - margin.left;
+  const mapWidth = mapW - margin.top - margin.bottom;
+
+  // CREATE AREA FOR US MAP and TRANSLATE
+  const usMap = map.append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    .attr("width", 580)
+                    .attr("height", mapHeight)
+
+  const usHeight = Number(usMap.attr("height"));
+  const usWidth = Number(usMap.attr("width"));
+
+  // CREATE AREA FOR MUSLIM BAN COUNTRIES AND TRANSLATE
+  const muslimMap = map.append("g")
+                        .attr("transform", "translate(" + (usWidth + margin.left + 20) + "," + margin.top + ")")
+                        .attr("width", 580)
+                        .attr("height", mapHeight);
+
+  const visualizeData = async() => {
+
+    // IMPORT TERROR DATASET
+    const usAttacks = await d3.csv("../datasets/usTerrorism.csv");
+    console.log(usAttacks);
+
+    // IMPORT IMMIGRATION DATASET
+    const immigration = await d3.csv("../datasets/muslimBanImmigration.csv");
+    console.log(immigration);
+
+  }
+
+  visualizeData();
+
+</script>
+
 </body>
 </html>
