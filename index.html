@@ -50,7 +50,7 @@
 
     const usData = await d3.json("../datasets/us.json");
       let states = topojson.feature(usData, usData.objects.states);
-      let project = d3.geoAlbersUsa().fitSize([usWidth, usHeight], states);
+      let project = d3.geoMercator().scale(750).center([-95.7129, 37.0902]).translate([margin.left + 330, margin.top + 200]);
       let path = d3.geoPath().projection(project);
 
       usMap.selectAll("path").data(states.features)
@@ -69,6 +69,17 @@
         .attr("note", d=> d.id)
         .attr("d", path);
 
+      // var data = [{longitude: -73.931351, latitude: 40.697132}];
+      // console.log(data);
+      //
+      // var circles = usMap.selectAll("circle")
+      //   .data(data)
+      //   .enter()
+      //   .append("circle")
+      //   .attr("cx", function(data) { return project([data.longitude, data.latitude])[0]; })
+      //   .attr("cy", function(data) { return project([data.longitude, data.latitude])[1]; })
+      //   .attr("r", 4.5)
+      //   .attr("fill", "red");
   }
 
   visualizeData();
