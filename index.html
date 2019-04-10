@@ -34,10 +34,33 @@
     padding: 20px;
     vertical-align: top;
   }
+
+  #header {
+    font: 28px bold;
+    font-weight: 800;
+    font-family: Helvetica;
+  }
+
+  .country {
+    font: 22px bold;
+    font-weight: 500;
+    font-family: Helvetica;
+  }
 </style>
 
 <div id="contentArea">
-  <svg class="mapArea" height="500" width="1500" style="display: block; margin: 0 auto; background-color: lightsalmon"/>
+  <svg class="mapArea" height="450" width="1500" style="display: block; margin: 0 auto;">
+    <text id="header" x="950" y="40" fill="black" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
+    <text class="country" id="Iran" x="950" y="80" fill="black" text-anchor="left", dominant-baseline="central">Iran</text>
+    <text class="country" id="Iraq" x="950" y="120" fill="black" text-anchor="left", dominant-baseline="central">Iraq</text>
+    <text class="country" id="Libya" x="950" y="160" fill="black" text-anchor="left", dominant-baseline="central">Libya</text>
+    <text class="country" id="Somalia" x="950" y="200" fill="black" text-anchor="left", dominant-baseline="central">Somalia</text>
+    <text class="country" id="Sudan" x="950" y="240" fill="black" text-anchor="left", dominant-baseline="central">Sudan</text>
+    <text class="country" id="Syria" x="950" y="280" fill="black" text-anchor="left", dominant-baseline="central">Syria</text>
+    <text class="country" id="Yemen" x="950" y="320" fill="black" text-anchor="left", dominant-baseline="central">Yemen</text>
+
+  </svg>
+
   <div id="attackData">
     <h2>Attack Information</h2>
     <p id="summary">Click on a circle to view information about the domestic terror attack.</p>
@@ -47,6 +70,7 @@
     <h2>Immigration Information</h2>
     <p id="info">Click on a country to view immigration data.</p>
   </div>
+
 </div>
 
 <script>
@@ -58,7 +82,6 @@
   const mapHeight = mapH - margin.right - margin.left;
   const mapWidth = mapW - margin.top - margin.bottom;
 
-  const data = d3.select(".dataArea");
   // CREATE AREA FOR US MAP and TRANSLATE
   const usMap = map.append("g")
                     .attr("transform", "translate(" + 10 + "," + 10 + ")")
@@ -96,14 +119,14 @@
         .enter()
         .append("path")
         .attr("class", "state")
-        .style("fill", "white")
+        .style("fill", "#D6D6D5")
         .style("stroke", "none")
         .attr("d", path)
         .attr("note", d => d.id);
 
       usMap.append("path")
         .datum(topojson.mesh(usData, usData.objects.states))
-        .style("stroke", "black")
+        .style("stroke", "#6A6B67")
         .style("fill", "none")
         .attr("note", d=> d.id)
         .attr("d", path);
@@ -115,7 +138,7 @@
         .attr("cx", function(usAttacks) { return project([usAttacks.longitude, usAttacks.latitude])[0]; })
         .attr("cy", function(usAttacks) { return project([usAttacks.longitude, usAttacks.latitude])[1]; })
         .attr("r", 3.5)
-        .attr("fill", "red")
+        .attr("fill", "#E23926")
         .attr("stroke", "gray")
         .attr("stroke-width", 1.5)
         .attr("fill-opacity", .6)
@@ -142,16 +165,20 @@
           circles.attr("clicked", "0")
             .transition()
             .duration(300)
-            .attr("fill", "red")
+            .attr("fill", "#E23926")
+            .attr("stroke", "gray")
+            .attr("stroke-width", 1.5)
             .attr("r", 3.5)
             .attr("fill-opacity", .6);
           d3.select(this)
             .transition()
             .duration(500)
             .attr("clicked", "1")
-            .attr("fill", "purple")
-            .attr("r", 3.5 + 4)
-            .attr("fill-opacity", 1);
+            .attr("fill", "white")
+            .attr("stroke", "#E23926")
+            .attr("stroke-width", 2)
+            .attr("r", 3.5 + 6)
+            .attr("fill-opacity", .8);
           d3.select("p#summary").remove();
           d3.select("p#affiliation").remove();
           d3.select("div#attackData").append("p")
