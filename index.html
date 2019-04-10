@@ -121,17 +121,17 @@
   const visualizeData = async() => {
 
     // IMPORT TERROR DATASET
-    var usAttacks = await d3.csv("../datasets/usTerrorism.csv");
+    var usAttacks = await d3.csv("/datasets/usTerrorism.csv");
 
     // Filter out rows with missing data
     usAttacks = usAttacks.filter(usAttacks => usAttacks.summary != "");
     usAttacks = usAttacks.filter(usAttacks => usAttacks.gname != "Unknown");
 
     // IMPORT IMMIGRATION DATASET
-    const immigration = await d3.csv("../datasets/muslimBanImmigration.csv");
+    const immigration = await d3.csv("/datasets/muslimBanImmigration.csv");
     console.log(immigration);
 
-    const usData = await d3.json("../datasets/us.json");
+    const usData = await d3.json("/datasets/us.json");
       let states = topojson.feature(usData, usData.objects.states);
       let project = d3.geoMercator().scale(700).center([-95.7129, 37.0902]).translate([margin.left + 330, margin.top + 200]);
       let path = d3.geoPath().projection(project);
