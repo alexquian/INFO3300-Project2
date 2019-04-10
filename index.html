@@ -118,6 +118,7 @@
         .attr("fill-opacity", .6)
         .attr("clicked", "0")
         .attr("summary", function(usAttacks) { return usAttacks.summary })
+        .attr("affiliation", function(usAttacks) { return usAttacks.gname })
         .on("mouseover", function() {
             d3.select(this)
               .transition()
@@ -149,11 +150,17 @@
             .attr("r", 3.5 + 4)
             .attr("fill-opacity", 1);
           d3.select("p#summary").remove();
+          d3.select("p#affiliation").remove();
           d3.select("div#attackData").append("p")
             .attr("id", "summary")
             .attr("x", 0)
             .attr("y", 0)
             .text(d3.select(this).attr("summary"));
+          d3.select("div#attackData").append("p")
+            .attr("id", "affiliation")
+            .attr("x", 0)
+            .attr("y", 0)
+            .text("Perpetrator Affiliation: " + d3.select(this).attr("affiliation"));
         });
   }
 
