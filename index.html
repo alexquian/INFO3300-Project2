@@ -94,7 +94,7 @@
   </div>
 
   <div id="immigrationData">
-    <h2>Immigration Information</h2>
+    <h2>Country Information</h2>
     <p id="info">Click on a country to view immigration data.</p>
   </div>
 
@@ -168,15 +168,17 @@
     .append("circle")
     .attr("cx", function(usAttacks) { return project([usAttacks.longitude, usAttacks.latitude])[0]; })
     .attr("cy", function(usAttacks) { return project([usAttacks.longitude, usAttacks.latitude])[1]; })
-    .attr("r", 3.5)
-    .attr("fill", "#E23926")
-    .attr("stroke", "gray")
-    .attr("stroke-width", 1.5)
-    .attr("fill-opacity", .6)
+    .attr("fill", "#E23926") // --- DEFAULT CIRCLE COLOR
+    .attr("stroke", "gray") // --- DEFAULT CIRCLE STROKE COLOR
+    .attr("stroke-width", 1.5) // --- DEFAULT CIRCLE STROKE WIDTH
+    .attr("r", 3.5) // --- DEFAULT CIRCLE SIZE
+    .attr("fill-opacity", .6) // --- DEFAULT CIRCLE OPACITY
     .attr("clicked", "0")
     .attr("highlighted", "0")
     .attr("summary", function(usAttacks) { return usAttacks.summary })
     .attr("affiliation", function(usAttacks) { return usAttacks.gname })
+
+    // Change styling of attack circle when hovering (increase circle size, make opaque)
     .on("mouseover", function() {
       d3.select(this)
       .transition()
@@ -184,6 +186,8 @@
       .attr("r", 3.5 + 4)
       .attr("fill-opacity", 1);
     })
+
+    // Change styling of attack circle when no longer hovering (reset size, set transparent)
     .on("mouseout", function() {
       if (d3.select(this).attr("clicked") == "0") {
         d3.select(this)
@@ -193,41 +197,56 @@
         .attr("fill-opacity", .6)
       }
     })
+
+    // Change styling of circles when click (reset all circles, increase size of selected circle, change color if not highlighted, change stroke color/width)
     .on("click", function() {
+
+      // If circle user clicks on is "highlighted", do the following
       if (d3.select(this).attr("highlighted") == "1") {
+
+        // Reset all circles
         circles.attr("clicked", "0")
           .transition()
           .duration(300)
           .attr("r", 3.5)
           .attr("fill-opacity", .6);
+
+        // Change styling of this circle (increase size, make less transparent, increase stroke width)
         d3.select(this)
           .transition()
           .duration(500)
           .attr("clicked", "1")
-          .attr("stroke-width", 2)
-          .attr("r", 3.5 + 6)
-          .attr("fill-opacity", .8);
+          .attr("stroke-width", 2) // --- CLICKED + HIGHLIGHTED CIRCLE WIDTH
+          .attr("r", 3.5 + 6) // --- CLICKED + HIGHLIGHTED CIRCLE SIZE
+          .attr("fill-opacity", .8); // --- CLICKED + HIGHLIGHTED CIRCLE OPACITY
+
+      // If circle user clicks on is NOT "highlighted", do the following
       } else {
         d3.selectAll("text.country").attr("fill", "black");
+
+        // Reset all circles
         circles.attr("highlighted", "0")
           .attr("clicked", "0")
           .transition()
           .duration(300)
-          .attr("fill", "#E23926")
-          .attr("stroke", "gray")
-          .attr("stroke-width", 1.5)
-          .attr("r", 3.5)
-          .attr("fill-opacity", .6);
+          .attr("fill", "#E23926") // --- DEFAULT CIRCLE COLOR
+          .attr("stroke", "gray") // --- DEFAULT CIRCLE STROKE COLOR
+          .attr("stroke-width", 1.5) // --- DEFAULT CIRCLE STROKE WIDTH
+          .attr("r", 3.5) // --- DEFAULT CIRCLE SIZE
+          .attr("fill-opacity", .6); // --- DEFAULT CIRCLE OPACITY
+
+        // Change styling of this circle (increase size, make less transparent, flip fill/stroke color, increase stroke width)
         d3.select(this)
           .transition()
           .duration(500)
           .attr("clicked", "1")
-          .attr("fill", "white")
-          .attr("stroke", "#E23926")
-          .attr("stroke-width", 2)
-          .attr("r", 3.5 + 6)
-          .attr("fill-opacity", .8);
+          .attr("fill", "white") // --- CLICKED CIRCLE COLOR
+          .attr("stroke", "#E23926") // --- CLICKED CIRCLE STROKE COLOR
+          .attr("stroke-width", 2) // --- CLICKED CIRCLE STROKE WIDTH
+          .attr("r", 3.5 + 6) // --- CLICKED CIRCLE SIZE
+          .attr("fill-opacity", .8); // --- CLICKED CIRCLE OPACITY
       }
+
       d3.select("p#summary").remove();
       d3.select("p#affiliation").remove();
       d3.select("div#attackData").append("p")
@@ -242,8 +261,13 @@
         .text("Perpetrator Affiliation: " + d3.select(this).attr("affiliation"));
     });
 
+    // Function handling click events on Mulsim ban countries
+
     function countryClick(country) {
+      // Reset styling for all countries
       d3.selectAll("text.country").attr("fill", "black");
+
+      // Change color of selected country
       d3.select("text#" + country)
         .transition()
         .duration(200)
@@ -251,6 +275,7 @@
 
       let numAttacks = 0;
 
+      // Reset styling of all circles
       circles.attr("highlighted", "0")
              .attr("clicked", "0")
              .transition()
@@ -264,17 +289,22 @@
       circles.each(function(d) {
         circle = d3.select(this)
 
+        // Identify attacks that correspond to selected country
         terrorAffiliations[country].forEach(function(group) {
           if (circle.attr("affiliation") == group) {
+
+            // Update styling for circles
             circle.transition()
                   .duration(500)
-                  .attr("fill", "#FFF575")
-                  .attr("r", 3.5 + 1)
-                  .attr("highlighted", "1");
+                  .attr("fill", "#FFF575") // --- HIGHLIGHTED CIRCLE COLOR
+                  .attr("r", 3.5 + 1) // --- HIGHLIGHTED CIRCLE SIZE
+                  .attr("highlighted", "1"); // --- SIGNIFIER ATTRIBUTE: DON'T TOUCH
 
             numAttacks += 1;
           }
         });
+
+      // Resest "Country Information" Text
       d3.select("p#info").remove();
       d3.select("p#numAttacks").remove();
       d3.select("div#immigrationData").append("p")
@@ -285,39 +315,41 @@
       });
     }
 
+    // Handles click events for Muslim ban countries. Do not edit.
+
     d3.select("text#Iran")
       .on("click", function() {
         countryClick("Iran")
-      });
+    });
 
     d3.select("text#Iraq")
-    .on("click", function() {
-      countryClick("Iraq")
+      .on("click", function() {
+        countryClick("Iraq")
     });
 
     d3.select("text#Libya")
-    .on("click", function() {
-      countryClick("Libya")
+      .on("click", function() {
+        countryClick("Libya")
     });
 
     d3.select("text#Somalia")
-    .on("click", function() {
-      countryClick("Somalia")
+      .on("click", function() {
+        countryClick("Somalia")
     });
 
     d3.select("text#Sudan")
-    .on("click", function() {
-      countryClick("Sudan")
+      .on("click", function() {
+        countryClick("Sudan")
     });
 
     d3.select("text#Syria")
-    .on("click", function() {
-      countryClick("Syria")
+      .on("click", function() {
+        countryClick("Syria")
     });
 
     d3.select("text#Yemen")
-    .on("click", function() {
-      countryClick("Yemen")
+      .on("click", function() {
+        countryClick("Yemen")
     });
 
   }
