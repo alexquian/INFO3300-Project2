@@ -77,8 +77,11 @@
   const visualizeData = async() => {
 
     // IMPORT TERROR DATASET
-    const usAttacks = await d3.csv("../datasets/usTerrorism.csv");
-    console.log(usAttacks);
+    var usAttacks = await d3.csv("../datasets/usTerrorism.csv");
+
+    // Filter out rows with missing data
+    usAttacks = usAttacks.filter(usAttacks => usAttacks.summary != "");
+    usAttacks = usAttacks.filter(usAttacks => usAttacks.gname != "Unknown");
 
     // IMPORT IMMIGRATION DATASET
     const immigration = await d3.csv("../datasets/muslimBanImmigration.csv");
