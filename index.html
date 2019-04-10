@@ -249,6 +249,8 @@
         .duration(200)
         .attr("fill", "#E23926");
 
+      let numAttacks = 0;
+
       circles.attr("highlighted", "0")
              .attr("clicked", "0")
              .transition()
@@ -269,8 +271,17 @@
                   .attr("fill", "#FFF575")
                   .attr("r", 3.5 + 1)
                   .attr("highlighted", "1");
+
+            numAttacks += 1;
           }
         });
+      d3.select("p#info").remove();
+      d3.select("p#numAttacks").remove();
+      d3.select("div#immigrationData").append("p")
+        .attr("id", "numAttacks")
+        .attr("x", 0)
+        .attr("y", 0)
+        .text("Number of US Terrorist Attacks Perpetrated by Groups Affiliated with " + country + ": " + numAttacks);
       });
     }
 
