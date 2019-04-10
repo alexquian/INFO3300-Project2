@@ -247,13 +247,18 @@
           .attr("fill-opacity", .8); // --- CLICKED CIRCLE OPACITY
       }
 
+      // Reset "Attack Information" text
       d3.select("p#summary").remove();
       d3.select("p#affiliation").remove();
+
+      // Update "Attack Summary" text
       d3.select("div#attackData").append("p")
         .attr("id", "summary")
         .attr("x", 0)
         .attr("y", 0)
         .text(d3.select(this).attr("summary"));
+
+      // Update "Perpetrator Affiliation" text
       d3.select("div#attackData").append("p")
         .attr("id", "affiliation")
         .attr("x", 0)
@@ -304,7 +309,7 @@
           }
         });
 
-      // Resest "Country Information" Text
+      // Reset "Country Information" Text
       d3.select("p#info").remove();
       d3.select("p#numAttacks").remove();
       d3.select("div#immigrationData").append("p")
