@@ -6,10 +6,10 @@
 </head>
 <body>
 
-<h1>INFO 3300 Project 2</h1>
-<h1>Terrorism & Immigration from "Muslim Ban" Countries</h1>
+  <h1>INFO 3300 Project 2</h1>
+  <h1>Terrorism & Immigration from "Muslim Ban" Countries</h1>
 
-<style>
+  <style>
   h1 {
     display: block;
     text-align: center;
@@ -66,6 +66,12 @@
     font: 22px bold;
     font-weight: 500;
     font-family: Helvetica, sans-serif;
+    transition-property: fill;
+    transition-duration: .25s;
+  }
+
+  .country:hover {
+    fill: #E23926;
   }
 </style>
 
@@ -105,18 +111,12 @@
 
   // CREATE AREA FOR US MAP and TRANSLATE
   const usMap = map.append("g")
-                    .attr("transform", "translate(" + 10 + "," + 10 + ")")
-                    .attr("width", 620)
-                    .attr("height", mapHeight)
+  .attr("transform", "translate(" + 10 + "," + 10 + ")")
+  .attr("width", 620)
+  .attr("height", mapHeight)
 
   const usHeight = Number(usMap.attr("height"));
   const usWidth = Number(usMap.attr("width"));
-
-  // CREATE AREA FOR MUSLIM BAN COUNTRIES AND TRANSLATE
-  const muslimMap = map.append("g")
-                        .attr("transform", "translate(" + (usWidth + margin.left + 20) + "," + margin.top + ")")
-                        .attr("width", 620)
-                        .attr("height", mapHeight);
 
   const visualizeData = async() => {
 
@@ -127,95 +127,191 @@
     usAttacks = usAttacks.filter(usAttacks => usAttacks.summary != "");
     usAttacks = usAttacks.filter(usAttacks => usAttacks.gname != "Unknown");
 
+    const terrorAffiliations = {Iran: ["Jihadi-inspired extremists", "Islamist Extremists",
+                                        "Mujahedin-e Khala (MEK)", "Iranians", "Imperial Iranian Patriotic Organization",
+                                      "Hanafi Muslims"],
+                                Iraq: ["Muslim extremists", "Islamist Extremists", "Mujahedin-e Khala (MEK)", "Hanafi Muslims"],
+                                Libya: ["Islamist Extremists", "Qaddafi Loyalists"],
+                                Somalia: ["Muslim extremists", "Hanafi Muslims"],
+                                Sudan: ["Islamist Extremists"],
+                                Syria: ["Jihadi-inspired extremists", "Hanafi Muslims"],
+                                Yemen: ["Al-Qaida in the Arabian Peninsula (AQAP)"]};
+
     // IMPORT IMMIGRATION DATASET
     const immigration = await d3.csv("../datasets/muslimBanImmigration.csv");
     console.log(immigration);
 
     const usData = await d3.json("../datasets/us.json");
-      let states = topojson.feature(usData, usData.objects.states);
-      let project = d3.geoMercator().scale(700).center([-95.7129, 37.0902]).translate([margin.left + 330, margin.top + 200]);
-      let path = d3.geoPath().projection(project);
+    let states = topojson.feature(usData, usData.objects.states);
+    let project = d3.geoMercator().scale(700).center([-95.7129, 37.0902]).translate([margin.left + 330, margin.top + 200]);
+    let path = d3.geoPath().projection(project);
 
-      usMap.selectAll("path").data(states.features)
-        .enter()
-        .append("path")
-        .attr("class", "state")
-        .style("fill", "#D6D6D5")
-        .style("stroke", "none")
-        .attr("d", path)
-        .attr("note", d => d.id);
+    usMap.selectAll("path").data(states.features)
+    .enter()
+    .append("path")
+    .attr("class", "state")
+    .style("fill", "#D6D6D5")
+    .style("stroke", "none")
+    .attr("d", path)
+    .attr("note", d => d.id);
 
-      usMap.append("path")
-        .datum(topojson.mesh(usData, usData.objects.states))
-        .style("stroke", "#6A6B67")
-        .style("fill", "none")
-        .attr("note", d=> d.id)
-        .attr("d", path);
+    usMap.append("path")
+    .datum(topojson.mesh(usData, usData.objects.states))
+    .style("stroke", "#6A6B67")
+    .style("fill", "none")
+    .attr("note", d=> d.id)
+    .attr("d", path);
 
-      var circles = usMap.selectAll("circle")
-        .data(usAttacks)
-        .enter()
-        .append("circle")
-        .attr("cx", function(usAttacks) { return project([usAttacks.longitude, usAttacks.latitude])[0]; })
-        .attr("cy", function(usAttacks) { return project([usAttacks.longitude, usAttacks.latitude])[1]; })
+    var circles = usMap.selectAll("circle")
+    .data(usAttacks)
+    .enter()
+    .append("circle")
+    .attr("cx", function(usAttacks) { return project([usAttacks.longitude, usAttacks.latitude])[0]; })
+    .attr("cy", function(usAttacks) { return project([usAttacks.longitude, usAttacks.latitude])[1]; })
+    .attr("r", 3.5)
+    .attr("fill", "#E23926")
+    .attr("stroke", "gray")
+    .attr("stroke-width", 1.5)
+    .attr("fill-opacity", .6)
+    .attr("clicked", "0")
+    .attr("highlighted", "0")
+    .attr("summary", function(usAttacks) { return usAttacks.summary })
+    .attr("affiliation", function(usAttacks) { return usAttacks.gname })
+    .on("mouseover", function() {
+      d3.select(this)
+      .transition()
+      .duration(500)
+      .attr("r", 3.5 + 4)
+      .attr("fill-opacity", 1);
+    })
+    .on("mouseout", function() {
+      if (d3.select(this).attr("clicked") == "0") {
+        d3.select(this)
+        .transition()
+        .duration(500)
         .attr("r", 3.5)
-        .attr("fill", "#E23926")
-        .attr("stroke", "gray")
-        .attr("stroke-width", 1.5)
         .attr("fill-opacity", .6)
-        .attr("clicked", "0")
-        .attr("summary", function(usAttacks) { return usAttacks.summary })
-        .attr("affiliation", function(usAttacks) { return usAttacks.gname })
-        .on("mouseover", function() {
-            d3.select(this)
-              .transition()
-              .duration(500)
-              .attr("r", 3.5 + 4)
-              .attr("fill-opacity", 1);
-        })
-        .on("mouseout", function() {
-          if (d3.select(this).attr("clicked") == "0") {
-            d3.select(this)
-              .transition()
-              .duration(500)
-              .attr("r", 3.5)
-              .attr("fill-opacity", .6)
+      }
+    })
+    .on("click", function() {
+      if (d3.select(this).attr("highlighted") == "1") {
+        circles.attr("clicked", "0")
+          .transition()
+          .duration(300)
+          .attr("r", 3.5)
+          .attr("fill-opacity", .6);
+        d3.select(this)
+          .transition()
+          .duration(500)
+          .attr("clicked", "1")
+          .attr("stroke-width", 2)
+          .attr("r", 3.5 + 6)
+          .attr("fill-opacity", .8);
+      } else {
+        d3.selectAll("text.country").attr("fill", "black");
+        circles.attr("highlighted", "0")
+          .attr("clicked", "0")
+          .transition()
+          .duration(300)
+          .attr("fill", "#E23926")
+          .attr("stroke", "gray")
+          .attr("stroke-width", 1.5)
+          .attr("r", 3.5)
+          .attr("fill-opacity", .6);
+        d3.select(this)
+          .transition()
+          .duration(500)
+          .attr("clicked", "1")
+          .attr("fill", "white")
+          .attr("stroke", "#E23926")
+          .attr("stroke-width", 2)
+          .attr("r", 3.5 + 6)
+          .attr("fill-opacity", .8);
+      }
+      d3.select("p#summary").remove();
+      d3.select("p#affiliation").remove();
+      d3.select("div#attackData").append("p")
+        .attr("id", "summary")
+        .attr("x", 0)
+        .attr("y", 0)
+        .text(d3.select(this).attr("summary"));
+      d3.select("div#attackData").append("p")
+        .attr("id", "affiliation")
+        .attr("x", 0)
+        .attr("y", 0)
+        .text("Perpetrator Affiliation: " + d3.select(this).attr("affiliation"));
+    });
+
+    function countryClick(country) {
+      d3.selectAll("text.country").attr("fill", "black");
+      d3.select("text#" + country)
+        .transition()
+        .duration(200)
+        .attr("fill", "#E23926");
+
+      circles.attr("highlighted", "0")
+             .attr("clicked", "0")
+             .transition()
+             .duration(300)
+             .attr("fill", "#E23926")
+             .attr("stroke", "gray")
+             .attr("stroke-width", 1.5)
+             .attr("r", 3.5)
+             .attr("fill-opacity", .6);
+
+      circles.each(function(d) {
+        circle = d3.select(this)
+
+        terrorAffiliations[country].forEach(function(group) {
+          if (circle.attr("affiliation") == group) {
+            circle.transition()
+                  .duration(500)
+                  .attr("fill", "#FFF575")
+                  .attr("r", 3.5 + 1)
+                  .attr("highlighted", "1");
           }
-        })
-        .on("click", function() {
-          circles.attr("clicked", "0")
-            .transition()
-            .duration(300)
-            .attr("fill", "#E23926")
-            .attr("stroke", "gray")
-            .attr("stroke-width", 1.5)
-            .attr("r", 3.5)
-            .attr("fill-opacity", .6);
-          d3.select(this)
-            .transition()
-            .duration(500)
-            .attr("clicked", "1")
-            .attr("fill", "white")
-            .attr("stroke", "#E23926")
-            .attr("stroke-width", 2)
-            .attr("r", 3.5 + 6)
-            .attr("fill-opacity", .8);
-          d3.select("p#summary").remove();
-          d3.select("p#affiliation").remove();
-          d3.select("div#attackData").append("p")
-            .attr("id", "summary")
-            .attr("x", 0)
-            .attr("y", 0)
-            .text(d3.select(this).attr("summary"));
-          d3.select("div#attackData").append("p")
-            .attr("id", "affiliation")
-            .attr("x", 0)
-            .attr("y", 0)
-            .text("Perpetrator Affiliation: " + d3.select(this).attr("affiliation"));
         });
+      });
+    }
+
+    d3.select("text#Iran")
+      .on("click", function() {
+        countryClick("Iran")
+      });
+
+    d3.select("text#Iraq")
+    .on("click", function() {
+      countryClick("Iraq")
+    });
+
+    d3.select("text#Libya")
+    .on("click", function() {
+      countryClick("Libya")
+    });
+
+    d3.select("text#Somalia")
+    .on("click", function() {
+      countryClick("Somalia")
+    });
+
+    d3.select("text#Sudan")
+    .on("click", function() {
+      countryClick("Sudan")
+    });
+
+    d3.select("text#Syria")
+    .on("click", function() {
+      countryClick("Syria")
+    });
+
+    d3.select("text#Yemen")
+    .on("click", function() {
+      countryClick("Yemen")
+    });
+
   }
 
-  visualizeData();
+visualizeData();
 
 </script>
 
