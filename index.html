@@ -27,27 +27,31 @@
     font-family: Helvetica, sans-serif;
   }
   body{
-    background-color: #fff9e8;
+    background-color: white;
   }
 
   #contentArea {
     display: block;
     margin: 0 auto;
     width: 1500px;
-    background-color: #fff2c9;
+    background-color: #C5C6DD;
   }
+
   #specialData{
-    background-color: #ffe8ce;
+    background-color: white;
   }
+
   #attackData {
     display: inline-block;
     width: 40%;
     padding: 10px;
     vertical-align: top;
   }
+
   #title{
-    background-color: #fff2c9;
+    background-color: #ffe8ce;
   }
+
   #attackData p {
     font-family: Helvetica, sans-serif;
   }
@@ -55,7 +59,7 @@
   #immigrationData {
     display: inline-block;
     width: 40%;
-    margin-left: 8%;
+    margin-left: 10%;
     padding: 20px;
     vertical-align: top;
   }
@@ -84,8 +88,8 @@
 </style>
 
 <div id="contentArea">
-  <svg class="mapArea" height="450" width="750" style="display: inline-block; margin-top: 40px;"/>
-  <svg class="countryArea" height="450" width="700" style="display: inline-block; margin-top: 40px;">
+  <svg class="mapArea" height="450" width="750" style="display: inline-block;"/>
+  <svg class="countryArea" height="450" width="700" style="display: inline-block;">
     <text id="header" x="50" y="40" fill="black" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
     <text class="country" id="Iran" x="50" y="80" fill="black" text-anchor="left", dominant-baseline="central">Iran</text>
     <text class="country" id="Iraq" x="50" y="120" fill="black" text-anchor="left", dominant-baseline="central">Iraq</text>
@@ -104,7 +108,7 @@
 
     <div id="immigrationData">
       <h2>Country Information</h2>
-      <svg id="chartArea" height="300" width="640" style="display: block; margin: 0 auto;"/>
+      <svg id="chartArea" height="300" width="640" style="display: block; margin: 0 auto; background-color: white"/>
       <p id="info">Click on a country to view immigration data.</p>
     </div>
   </div>
@@ -198,6 +202,8 @@
         usMap.selectAll("circle")
           .attr("r", 3.5 - zoom.k/4)
           .attr("stroke-width", 1.5 / zoom.k);
+          currentR = 3.5 - zoom.k/4;
+          currentSW = 1.5 / zoom.k;
       } else {
         usMap.selectAll("circle")
           .attr("r", 3.5)
@@ -207,6 +213,7 @@
     };
 
     var currentR = 3.5;
+    var currentSW = 1.5;
 
     var circles = usMap.selectAll("circle")
       .data(usAttacks)
@@ -230,8 +237,6 @@
         let thisCircle = d3.select(this);
         currentR = Math.min(currentR, Number(thisCircle.attr("r")));
         currentSW = Number(thisCircle.attr("stroke-width"));
-
-        console.log("current R when hover: " + currentR);
 
         thisCircle.transition()
           .duration(500)
@@ -260,6 +265,7 @@
             .transition()
             .duration(300)
             .attr("r", currentR)
+            .attr("stroke-width", currentSW)
             .attr("fill-opacity", .6);
 
           // Change styling of this circle (increase size, make less transparent, increase stroke width)
@@ -347,8 +353,8 @@
              .duration(300)
              .attr("fill", "#E23926")
              .attr("stroke", "gray")
-             .attr("stroke-width", 1.5)
-             .attr("r", 3.5)
+             .attr("stroke-width", currentSW)
+             .attr("r", currentR)
              .attr("fill-opacity", .6);
 
       circles.each(function(d) {
@@ -360,9 +366,9 @@
 
             // Update styling for circles
             circle.transition()
-                  .duration(500)
+                  .duration(1000)
                   .attr("fill", "#FFF575") // --- HIGHLIGHTED CIRCLE COLOR
-                  .attr("r", 3.5 + 1) // --- HIGHLIGHTED CIRCLE SIZE
+                  .attr("r", currentR + 4) // --- HIGHLIGHTED CIRCLE SIZE
                   .attr("highlighted", "1"); // --- SIGNIFIER ATTRIBUTE: DON'T TOUCH
 
             numAttacks += 1;
@@ -408,13 +414,6 @@
           .attr("stroke", "#E23926")
           .attr("stroke-width", 3.5);
 
-
-      // var yemenImmigration = [{}];
-      // immigration.forEach(function(row) {
-      //   if (row["Region/Subregion/Country of Birth"] == "Yemen") {
-      //       yemenImmigration.push({Year: row["Year of Year"], Immigrants: row.Immigrants});
-      //     }
-      // });
     }
 
     // Handles click events for Muslim ban countries. Do not edit.
