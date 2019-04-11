@@ -76,16 +76,16 @@
 </style>
 
 <div id="contentArea">
-  <svg class="mapArea" height="450" width="1500" style="display: block; margin: 0 auto; margin-top: 40px;">
-    <text id="header" x="950" y="40" fill="black" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
-    <text class="country" id="Iran" x="950" y="80" fill="black" text-anchor="left", dominant-baseline="central">Iran</text>
-    <text class="country" id="Iraq" x="950" y="120" fill="black" text-anchor="left", dominant-baseline="central">Iraq</text>
-    <text class="country" id="Libya" x="950" y="160" fill="black" text-anchor="left", dominant-baseline="central">Libya</text>
-    <text class="country" id="Somalia" x="950" y="200" fill="black" text-anchor="left", dominant-baseline="central">Somalia</text>
-    <text class="country" id="Sudan" x="950" y="240" fill="black" text-anchor="left", dominant-baseline="central">Sudan</text>
-    <text class="country" id="Syria" x="950" y="280" fill="black" text-anchor="left", dominant-baseline="central">Syria</text>
-    <text class="country" id="Yemen" x="950" y="320" fill="black" text-anchor="left", dominant-baseline="central">Yemen</text>
-
+  <svg class="mapArea" height="450" width="750" style="display: inline-block; margin-top: 40px;"/>
+  <svg class="countryArea" height="450" width="700" style="display: inline-block; margin-top: 40px;">
+    <text id="header" x="50" y="40" fill="black" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
+    <text class="country" id="Iran" x="50" y="80" fill="black" text-anchor="left", dominant-baseline="central">Iran</text>
+    <text class="country" id="Iraq" x="50" y="120" fill="black" text-anchor="left", dominant-baseline="central">Iraq</text>
+    <text class="country" id="Libya" x="50" y="160" fill="black" text-anchor="left", dominant-baseline="central">Libya</text>
+    <text class="country" id="Somalia" x="50" y="200" fill="black" text-anchor="left", dominant-baseline="central">Somalia</text>
+    <text class="country" id="Sudan" x="50" y="240" fill="black" text-anchor="left", dominant-baseline="central">Sudan</text>
+    <text class="country" id="Syria" x="50" y="280" fill="black" text-anchor="left", dominant-baseline="central">Syria</text>
+    <text class="country" id="Yemen" x="50" y="320" fill="black" text-anchor="left", dominant-baseline="central">Yemen</text>
   </svg>
 
   <div id="attackData">
@@ -164,10 +164,39 @@
 
     usMap.append("path")
       .datum(topojson.mesh(usData, usData.objects.states))
+      .attr("class", "stateStroke")
       .style("stroke", "#6A6B67")
       .style("fill", "none")
       .attr("note", d=> d.id)
       .attr("d", path);
+
+    var mapZoom = d3.zoom()
+                  .scaleExtent([1,7])
+                  .translateExtent([[10, 10], [mapWidth + 10, mapHeight + 10]])
+                  .on("zoom", zoomEvent);
+
+    usMap.call(mapZoom);
+
+    function zoomEvent() {
+      let zoom = d3.event.transform;
+
+      usMap.attr("transform", zoom.toString());
+      usMap.select(".stateStroke")
+          .attr("stroke-width", 1 / zoom.k);
+
+      if (zoom.k > 2) {
+        usMap.selectAll("circle")
+          .attr("r", 3.5 - zoom.k/4)
+          .attr("stroke-width", 1.5 / zoom.k);
+      } else {
+        usMap.selectAll("circle")
+          .attr("r", 3.5)
+          .attr("stroke-width", 1.5);
+      }
+
+    };
+
+    var currentR = 3.5;
 
     var circles = usMap.selectAll("circle")
       .data(usAttacks)
@@ -187,20 +216,25 @@
 
     // Change styling of attack circle when hovering (increase circle size, make opaque)
       .on("mouseover", function() {
-        d3.select(this)
-        .transition()
-        .duration(500)
-        .attr("r", 3.5 + 4)
-        .attr("fill-opacity", 1);
+
+        let thisCircle = d3.select(this);
+        currentR = Math.min(currentR, Number(thisCircle.attr("r")));
+        currentSW = Number(thisCircle.attr("stroke-width"));
+
+        console.log("current R when hover: " + currentR);
+
+        thisCircle.transition()
+          .duration(500)
+          .attr("r", currentR + 4)
+          .attr("fill-opacity", 1);
       })
 
     // Change styling of attack circle when no longer hovering (reset size, set transparent)
       .on("mouseout", function() {
         if (d3.select(this).attr("clicked") == "0") {
-          d3.select(this)
-          .transition()
+          d3.select(this).transition()
           .duration(500)
-          .attr("r", 3.5)
+          .attr("r", currentR)
           .attr("fill-opacity", .6)
         }
       })
@@ -215,7 +249,7 @@
           circles.attr("clicked", "0")
             .transition()
             .duration(300)
-            .attr("r", 3.5)
+            .attr("r", currentR)
             .attr("fill-opacity", .6);
 
           // Change styling of this circle (increase size, make less transparent, increase stroke width)
@@ -223,12 +257,13 @@
             .transition()
             .duration(500)
             .attr("clicked", "1")
-            .attr("stroke-width", 2) // --- CLICKED + HIGHLIGHTED CIRCLE WIDTH
-            .attr("r", 3.5 + 6) // --- CLICKED + HIGHLIGHTED CIRCLE SIZE
+            .attr("stroke-width", currentSW + .5) // --- CLICKED + HIGHLIGHTED CIRCLE WIDTH
+            .attr("r", currentR + 5) // --- CLICKED + HIGHLIGHTED CIRCLE SIZE
             .attr("fill-opacity", .8); // --- CLICKED + HIGHLIGHTED CIRCLE OPACITY
 
         // If circle user clicks on is NOT "highlighted", do the following
         } else {
+
           // Deselect currently selected country and reset information
           d3.selectAll("text.country").attr("fill", "black");
           d3.select("p#info").remove();
@@ -246,8 +281,8 @@
             .duration(300)
             .attr("fill", "#E23926") // --- DEFAULT CIRCLE COLOR
             .attr("stroke", "gray") // --- DEFAULT CIRCLE STROKE COLOR
-            .attr("stroke-width", 1.5) // --- DEFAULT CIRCLE STROKE WIDTH
-            .attr("r", 3.5) // --- DEFAULT CIRCLE SIZE
+            .attr("stroke-width", currentSW) // --- DEFAULT CIRCLE STROKE WIDTH
+            .attr("r", currentR) // --- DEFAULT CIRCLE SIZE
             .attr("fill-opacity", .6); // --- DEFAULT CIRCLE OPACITY
 
           // Change styling of this circle (increase size, make less transparent, flip fill/stroke color, increase stroke width)
@@ -257,8 +292,8 @@
             .attr("clicked", "1")
             .attr("fill", "white") // --- CLICKED CIRCLE COLOR
             .attr("stroke", "#E23926") // --- CLICKED CIRCLE STROKE COLOR
-            .attr("stroke-width", 2) // --- CLICKED CIRCLE STROKE WIDTH
-            .attr("r", 3.5 + 6) // --- CLICKED CIRCLE SIZE
+            .attr("stroke-width", currentSW + .5) // --- CLICKED CIRCLE STROKE WIDTH
+            .attr("r", currentR + 6) // --- CLICKED CIRCLE SIZE
             .attr("fill-opacity", .8); // --- CLICKED CIRCLE OPACITY
         }
 
