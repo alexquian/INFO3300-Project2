@@ -224,7 +224,7 @@
 
       if (zoom.k > 2) {
         usMap.selectAll("circle")
-          .attr("r", 3.5 - zoom.k/3)
+          .attr("r", 3.5 - zoom.k/2.5)
           .attr("stroke-width", 1.5 / zoom.k);
           currentR = 3.5 - zoom.k/4;
           currentSW = 1.5 / zoom.k;
