@@ -6,9 +6,6 @@
 </head>
 <body>
 
-  <h1>INFO 3300 Project 2</h1>
-  <h1>Terrorism & Immigration from "Muslim Ban" Countries</h1>
-
   <style>
   h1 {
     display: block;
@@ -23,7 +20,8 @@
 
   h2 {
     font: 20px bold;
-    font-weight: 500;
+    color: #E23926;
+    font-weight: 600;
     font-family: Helvetica, sans-serif;
   }
   body{
@@ -33,12 +31,18 @@
   #contentArea {
     display: block;
     margin: 0 auto;
+    margin-bottom: 2%;
     width: 1500px;
-    background-color: #C5C6DD;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 30px;
+    border: 1.5px solid black;
   }
 
   #specialData{
     background-color: white;
+    border-top: 1.5px solid black;
   }
 
   #attackData {
@@ -88,9 +92,11 @@
 </style>
 
 <div id="contentArea">
+  <h1>INFO 3300 Project 2</h1>
+  <h1>Terrorism & Immigration from "Muslim Ban" Countries</h1>
   <svg class="mapArea" height="450" width="750" style="display: inline-block;"/>
   <svg class="countryArea" height="450" width="700" style="display: inline-block;">
-    <text id="header" x="50" y="40" fill="black" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
+    <text id="header" x="50" y="40" fill="#E23926" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
     <text class="country" id="Iran" x="50" y="80" fill="black" text-anchor="left", dominant-baseline="central">Iran</text>
     <text class="country" id="Iraq" x="50" y="120" fill="black" text-anchor="left", dominant-baseline="central">Iraq</text>
     <text class="country" id="Libya" x="50" y="160" fill="black" text-anchor="left", dominant-baseline="central">Libya</text>
