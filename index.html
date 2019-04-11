@@ -5,11 +5,11 @@
   <script src="https://d3js.org/topojson.v2.min.js"></script>
 </head>
 <body>
-
-  <h1>INFO 3300 Project 2</h1>
-  <h1>Terrorism & Immigration from "Muslim Ban" Countries</h1>
+    <h1>INFO 3300 Project 2</h1>
+    <h1>Terrorism & Immigration from "Muslim Ban" Countries</h1>
 
   <style>
+
   h1 {
     display: block;
     text-align: center;
@@ -26,20 +26,28 @@
     font-weight: 500;
     font-family: Helvetica, sans-serif;
   }
+  body{
+    background-color: #fff9e8;
+  }
 
   #contentArea {
     display: block;
     margin: 0 auto;
-    width: 1500px;
+    width: 100%;
+    background-color: #fff2c9;
   }
-
+  #specialData{
+    background-color: #ffe8ce;
+  }
   #attackData {
     display: inline-block;
     width: 40%;
-    padding: 20px;
+    padding: 10px;
     vertical-align: top;
   }
-
+  #title{
+    background-color: #fff2c9;
+  }
   #attackData p {
     font-family: Helvetica, sans-serif;
   }
@@ -47,7 +55,7 @@
   #immigrationData {
     display: inline-block;
     width: 40%;
-    margin-left: 10%;
+    margin-left: 8%;
     padding: 20px;
     vertical-align: top;
   }
@@ -57,7 +65,7 @@
   }
 
   #header {
-    font: 28px bold;
+    font: 25px bold;
     font-weight: 800;
     font-family: Helvetica, sans-serif;
   }
@@ -76,26 +84,27 @@
 </style>
 
 <div id="contentArea">
-  <svg class="mapArea" height="450" width="1500" style="display: block; margin: 0 auto; margin-top: 40px;">
-    <text id="header" x="950" y="40" fill="black" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
-    <text class="country" id="Iran" x="950" y="80" fill="black" text-anchor="left", dominant-baseline="central">Iran</text>
-    <text class="country" id="Iraq" x="950" y="120" fill="black" text-anchor="left", dominant-baseline="central">Iraq</text>
-    <text class="country" id="Libya" x="950" y="160" fill="black" text-anchor="left", dominant-baseline="central">Libya</text>
-    <text class="country" id="Somalia" x="950" y="200" fill="black" text-anchor="left", dominant-baseline="central">Somalia</text>
-    <text class="country" id="Sudan" x="950" y="240" fill="black" text-anchor="left", dominant-baseline="central">Sudan</text>
-    <text class="country" id="Syria" x="950" y="280" fill="black" text-anchor="left", dominant-baseline="central">Syria</text>
-    <text class="country" id="Yemen" x="950" y="320" fill="black" text-anchor="left", dominant-baseline="central">Yemen</text>
+  <svg class="mapArea" height="450" width="100%" style="display: block; margin: 0 auto; margin-top: 40px;">
+    <text id="header" x="850" y="40" fill="black" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
+    <text class="country" id="Iran" x="850" y="80" fill="black" text-anchor="left", dominant-baseline="central">Iran</text>
+    <text class="country" id="Iraq" x="850" y="120" fill="black" text-anchor="left", dominant-baseline="central">Iraq</text>
+    <text class="country" id="Libya" x="850" y="160" fill="black" text-anchor="left", dominant-baseline="central">Libya</text>
+    <text class="country" id="Somalia" x="850" y="200" fill="black" text-anchor="left", dominant-baseline="central">Somalia</text>
+    <text class="country" id="Sudan" x="850" y="240" fill="black" text-anchor="left", dominant-baseline="central">Sudan</text>
+    <text class="country" id="Syria" x="850" y="280" fill="black" text-anchor="left", dominant-baseline="central">Syria</text>
+    <text class="country" id="Yemen" x="850" y="320" fill="black" text-anchor="left", dominant-baseline="central">Yemen</text>
 
   </svg>
+  <div id="specialData">
+    <div id="attackData">
+      <h2>Attack Information</h2>
+      <p id="summary">Click on a circle to view information about the domestic terror attack.</p>
+    </div>
 
-  <div id="attackData">
-    <h2>Attack Information</h2>
-    <p id="summary">Click on a circle to view information about the domestic terror attack.</p>
-  </div>
-
-  <div id="immigrationData">
-    <h2>Immigration Information</h2>
-    <p id="info">Click on a country to view immigration data.</p>
+    <div id="immigrationData">
+      <h2>Immigration Information</h2>
+      <p id="info">Click on a country to view immigration data.</p>
+    </div>
   </div>
 
 </div>
