@@ -200,7 +200,7 @@
 
       if (zoom.k > 2) {
         usMap.selectAll("circle")
-          .attr("r", 3.5 - zoom.k/4)
+          .attr("r", 3.5 - zoom.k/3)
           .attr("stroke-width", 1.5 / zoom.k);
           currentR = 3.5 - zoom.k/4;
           currentSW = 1.5 / zoom.k;
@@ -257,79 +257,81 @@
     // Change styling of circles when click (reset all circles, increase size of selected circle, change color if not highlighted, change stroke color/width)
       .on("click", function() {
 
-        // If circle user clicks on is "highlighted", do the following
-        if (d3.select(this).attr("highlighted") == "1") {
+        if (d3.select(this).attr("clicked") == "0") {
+          // If circle user clicks on is "highlighted", do the following
+          if (d3.select(this).attr("highlighted") == "1") {
 
-          // Reset all circles
-          circles.attr("clicked", "0")
-            .transition()
-            .duration(300)
-            .attr("r", currentR)
-            .attr("stroke-width", currentSW)
-            .attr("fill-opacity", .6);
+            // Reset all circles
+            circles.attr("clicked", "0")
+              .transition()
+              .duration(300)
+              .attr("r", currentR)
+              .attr("stroke-width", currentSW)
+              .attr("fill-opacity", .6);
 
-          // Change styling of this circle (increase size, make less transparent, increase stroke width)
-          d3.select(this)
-            .transition()
-            .duration(500)
-            .attr("clicked", "1")
-            .attr("stroke-width", currentSW + .5) // --- CLICKED + HIGHLIGHTED CIRCLE WIDTH
-            .attr("r", currentR + 5) // --- CLICKED + HIGHLIGHTED CIRCLE SIZE
-            .attr("fill-opacity", .8); // --- CLICKED + HIGHLIGHTED CIRCLE OPACITY
+            // Change styling of this circle (increase size, make less transparent, increase stroke width)
+            d3.select(this)
+              .transition()
+              .duration(500)
+              .attr("clicked", "1")
+              .attr("stroke-width", currentSW + .5) // --- CLICKED + HIGHLIGHTED CIRCLE WIDTH
+              .attr("r", currentR + 5) // --- CLICKED + HIGHLIGHTED CIRCLE SIZE
+              .attr("fill-opacity", .8); // --- CLICKED + HIGHLIGHTED CIRCLE OPACITY
 
-        // If circle user clicks on is NOT "highlighted", do the following
-        } else {
+          // If circle user clicks on is NOT "highlighted", do the following
+          } else {
 
-          // Deselect currently selected country and reset information
-          d3.selectAll("text.country").attr("fill", "black");
-          d3.select("p#info").remove();
-          d3.select("p#numAttacks").remove();
-          linePlot.selectAll(".immigrantLine").remove();
-          d3.select("div#immigrationData")
-            .append("p")
-            .attr("id", "info")
-            .text("Click on a country to view immigration data.");
+            // Deselect currently selected country and reset information
+            d3.selectAll("text.country").attr("fill", "black");
+            d3.select("p#info").remove();
+            d3.select("p#numAttacks").remove();
+            linePlot.selectAll(".immigrantLine").remove();
+            d3.select("div#immigrationData")
+              .append("p")
+              .attr("id", "info")
+              .text("Click on a country to view immigration data.");
 
-          // Reset all circles
-          circles.attr("highlighted", "0")
-            .attr("clicked", "0")
-            .transition()
-            .duration(300)
-            .attr("fill", "#E23926") // --- DEFAULT CIRCLE COLOR
-            .attr("stroke", "gray") // --- DEFAULT CIRCLE STROKE COLOR
-            .attr("stroke-width", currentSW) // --- DEFAULT CIRCLE STROKE WIDTH
-            .attr("r", currentR) // --- DEFAULT CIRCLE SIZE
-            .attr("fill-opacity", .6); // --- DEFAULT CIRCLE OPACITY
+            // Reset all circles
+            circles.attr("highlighted", "0")
+              .attr("clicked", "0")
+              .transition()
+              .duration(300)
+              .attr("fill", "#E23926") // --- DEFAULT CIRCLE COLOR
+              .attr("stroke", "gray") // --- DEFAULT CIRCLE STROKE COLOR
+              .attr("stroke-width", currentSW) // --- DEFAULT CIRCLE STROKE WIDTH
+              .attr("r", currentR) // --- DEFAULT CIRCLE SIZE
+              .attr("fill-opacity", .6); // --- DEFAULT CIRCLE OPACITY
 
-          // Change styling of this circle (increase size, make less transparent, flip fill/stroke color, increase stroke width)
-          d3.select(this)
-            .transition()
-            .duration(500)
-            .attr("clicked", "1")
-            .attr("fill", "white") // --- CLICKED CIRCLE COLOR
-            .attr("stroke", "#E23926") // --- CLICKED CIRCLE STROKE COLOR
-            .attr("stroke-width", currentSW + .5) // --- CLICKED CIRCLE STROKE WIDTH
-            .attr("r", currentR + 6) // --- CLICKED CIRCLE SIZE
-            .attr("fill-opacity", .8); // --- CLICKED CIRCLE OPACITY
+            // Change styling of this circle (increase size, make less transparent, flip fill/stroke color, increase stroke width)
+            d3.select(this)
+              .transition()
+              .duration(500)
+              .attr("clicked", "1")
+              .attr("fill", "white") // --- CLICKED CIRCLE COLOR
+              .attr("stroke", "#E23926") // --- CLICKED CIRCLE STROKE COLOR
+              .attr("stroke-width", currentSW + .5) // --- CLICKED CIRCLE STROKE WIDTH
+              .attr("r", currentR + 6) // --- CLICKED CIRCLE SIZE
+              .attr("fill-opacity", .8); // --- CLICKED CIRCLE OPACITY
+          }
+
+          // Reset "Attack Information" text
+          d3.select("p#summary").remove();
+          d3.select("p#affiliation").remove();
+
+          // Update "Attack Summary" text
+          d3.select("div#attackData").append("p")
+            .attr("id", "summary")
+            .attr("x", 0)
+            .attr("y", 0)
+            .text(d3.select(this).attr("summary"));
+
+          // Update "Perpetrator Affiliation" text
+          d3.select("div#attackData").append("p")
+            .attr("id", "affiliation")
+            .attr("x", 0)
+            .attr("y", 0)
+            .text("Perpetrator Affiliation: " + d3.select(this).attr("affiliation"));
         }
-
-        // Reset "Attack Information" text
-        d3.select("p#summary").remove();
-        d3.select("p#affiliation").remove();
-
-        // Update "Attack Summary" text
-        d3.select("div#attackData").append("p")
-          .attr("id", "summary")
-          .attr("x", 0)
-          .attr("y", 0)
-          .text(d3.select(this).attr("summary"));
-
-        // Update "Perpetrator Affiliation" text
-        d3.select("div#attackData").append("p")
-          .attr("id", "affiliation")
-          .attr("x", 0)
-          .attr("y", 0)
-          .text("Perpetrator Affiliation: " + d3.select(this).attr("affiliation"));
       });
 
     // Function handling click events on Mulsim ban countries
@@ -399,8 +401,8 @@
       linePlot.selectAll(".immigrantLine").remove();
 
       let countryLine = d3.line()
-        .x(function(countryImmigration) { console.log(countryImmigration.Year); return yearScale(countryImmigration.Year) })
-        .y(function(countryImmigration) { console.log(countryImmigration.Immigrants); return immigrantScale(countryImmigration.Immigrants) });
+        .x(function(countryImmigration) { return yearScale(countryImmigration.Year) })
+        .y(function(countryImmigration) { return immigrantScale(countryImmigration.Immigrants) });
 
       linePlot.append("g")
         .attr("transform", "translate(" + 35 + "," + 20 + ")")
