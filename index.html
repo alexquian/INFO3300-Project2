@@ -24,6 +24,17 @@
     font-weight: 600;
     font-family: Helvetica, sans-serif;
   }
+
+  #projectSummary {
+    font-size: 18px;
+    font-family: Helvetica, sans-serif;
+    display: block;
+    width: 95%;
+    margin: 0 auto;
+    padding: 20px;
+    vertical-align: top;
+  }
+
   body{
     background-color: #fff9e8;
   }
@@ -36,7 +47,7 @@
     padding-top: 5px;
     padding-left: 5px;
     padding-right: 5px;
-    padding-bottom: 30px;
+    padding-bottom: 5px;
     border: 1.5px solid black;
     background-color: white;
   }
@@ -95,6 +106,13 @@
 <div id="contentArea">
   <h1>INFO 3300 Project 2</h1>
   <h1>Terrorism & Immigration from "Muslim Ban" Countries</h1>
+
+  <p id="projectSummary">
+    Is there truth behind the rhetoric of Trump's Muslim Ban? This map displays all recorded US terror attacks since approximately 1960. To explore possible correlations
+    between immigration from countries on the Muslim Ban and terrorism, selecting a country listed in the Muslim Ban will highlight on the map any terror attacks committed
+    by groups affiliated with that country and display immigration data since 1980.
+  </p>
+
   <svg class="mapArea" height="450" width="750" style="display: inline-block;"/>
   <svg class="countryArea" height="450" width="700" style="display: inline-block;">
     <text id="header" x="50" y="40" fill="#E23926" text-anchor="left", dominant-baseline="central">Countries Listed in Muslim Ban</text>
@@ -293,6 +311,7 @@
             d3.select("p#info").remove();
             d3.select("p#numAttacks").remove();
             linePlot.selectAll(".immigrantLine").remove();
+            linePlot.selectAll("circle").remove();
             d3.select("div#immigrationData")
               .append("p")
               .attr("id", "info")
@@ -367,8 +386,6 @@
              .attr("r", currentR)
              .attr("fill-opacity", .6);
 
-      linePlot.selectAll("circle").remove();
-
       var yearsSeen = {};
 
       let countryImmigration = [];
@@ -379,7 +396,9 @@
           }
       });
 
+      // Reset country information
       linePlot.selectAll(".immigrantLine").remove();
+      linePlot.selectAll("circle").remove();
 
       let countryLine = d3.line()
         .x(function(countryImmigration) { return yearScale(countryImmigration.Year) })
