@@ -95,8 +95,8 @@
 
   <div id="immigrationData">
     <h2>Country Information</h2>
+    <svg id="chartArea" height="300" width="640" style="display: block; margin: 0 auto;"/>
     <p id="info">Click on a country to view immigration data.</p>
-    <svg id="chartArea" height="300" width="640" style="display: block; margin: 0 auto; background-color: salmon">
   </div>
 
 </div>
@@ -314,17 +314,54 @@
 
             numAttacks += 1;
           }
+
+
+
         });
 
-      // Reset "Country Information" Text
-      d3.select("p#info").remove();
-      d3.select("p#numAttacks").remove();
-      d3.select("div#immigrationData").append("p")
-        .attr("id", "numAttacks")
-        .attr("x", 0)
-        .attr("y", 0)
-        .text("Number of US Terrorist Attacks Perpetrated by Groups Affiliated with " + country + ": " + numAttacks);
+        // Reset "Country Information" Text
+        d3.select("p#info").remove();
+        d3.select("p#numAttacks").remove();
+        d3.select("div#immigrationData").append("p")
+          .attr("id", "numAttacks")
+          .attr("x", 0)
+          .attr("y", 0)
+          .text("Number of US Terrorist Attacks Perpetrated by Groups Affiliated with " + country + ": " + numAttacks);
+        });
+
+      let countryImmigration = [];
+
+      immigration.forEach(function(row) {
+          if (row["Region/Subregion/Country of Birth"] == country) {
+            countryImmigration.push({Year: Number(row["Year of Year"]), Immigrants: Number(row.Immigrants)});
+          }
       });
+
+      linePlot.selectAll(".immigrantLine").remove();
+
+      let countryLine = d3.line()
+        .x(function(countryImmigration) { console.log(countryImmigration.Year); return yearScale(countryImmigration.Year) })
+        .y(function(countryImmigration) { console.log(countryImmigration.Immigrants); return immigrantScale(countryImmigration.Immigrants) });
+
+      linePlot.append("g")
+        .attr("transform", "translate(" + 35 + "," + 20 + ")")
+        .append("path")
+          .attr("class", "immigrantLine")
+          .attr("fill", "none")
+          .datum(countryImmigration)
+          .attr("d", countryLine)
+          .transition()
+          .duration(1000)
+          .attr("stroke", "#E23926")
+          .attr("stroke-width", 5);
+
+
+      // var yemenImmigration = [{}];
+      // immigration.forEach(function(row) {
+      //   if (row["Region/Subregion/Country of Birth"] == "Yemen") {
+      //       yemenImmigration.push({Year: row["Year of Year"], Immigrants: row.Immigrants});
+      //     }
+      // });
     }
 
     // Handles click events for Muslim ban countries. Do not edit.
@@ -371,10 +408,15 @@
     //     }
     // });
 
+
+    // Generate blank line plot
+
     var immigrationMax = 0;
     immigration.forEach(function(row) {
         immigrationMax = Math.max(row.Immigrants);
     });
+
+    console.log(immigrationMax);
 
     var yearScale = d3.scaleLinear()
       .domain([1960, 2017])
@@ -386,7 +428,7 @@
       .tickFormat(d3.format("d"));
 
     var immigrantScale = d3.scaleLinear()
-      .domain([0, (immigrationMax + 150)])
+      .domain([0, 450000])
       .range([chartHeight, 10]);
 
     let immigrantAxis = d3.axisLeft(immigrantScale)
@@ -400,7 +442,7 @@
     let yearLines = d3.axisBottom(yearScale)
                       .tickValues([1957.3, 1960, 1970, 1980, 1990, 2000, 2010, 2017])
                       .tickSize(0)
-                      .tickSizeInner(-chartHeight+20)
+                      .tickSizeInner(-chartHeight+10)
                       .tickFormat("");
 
     linePlot.append("g").attr("class", "xGrid")
@@ -413,7 +455,7 @@
       .call(immigrantAxis);
 
       let immigrationLines = d3.axisLeft(immigrantScale)
-                               .tickValues([0, 50000, 100000, 150000, 200000, 250000, 300000, 350000, 380000])
+                               .tickValues([0, 50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000])
                                .tickSize(0)
                                .tickSizeInner(-chartWidth+24)
                                .tickFormat("");
@@ -423,7 +465,6 @@
       .call(immigrationLines);
 
     linePlot.selectAll(".domain").remove();
-
 
   }
 
