@@ -86,11 +86,15 @@
   }
 
   #header {
-    font: 22px bold;
+    font: 20px bold;
     font-weight: 800;
     font-family: Helvetica, sans-serif;
   }
-
+  #label {
+    font:12px;
+    font-family: Helvetica, sans-serif;
+    transform: rotate(180deg);
+  }
   .country {
     font: 22px bold;
     font-weight: 500;
@@ -133,8 +137,12 @@
     </div>
 
     <div id="immigrationData">
+      <svg id="label">
+        <text x="250" y="-50" style="writing-mode: tb;"> Total immigrants </text>
+      </svg>
       <h2>Country Information</h2>
       <svg id="chartArea" height="300" width="540" style="display: block; margin: 0 auto; background-color: white"/>
+
       <p id="info">Click on a country to view immigration data.</p>
     </div>
   </div>
