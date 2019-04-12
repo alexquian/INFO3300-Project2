@@ -93,7 +93,7 @@
   #label {
     font:12px;
     font-family: Helvetica, sans-serif;
-    transform: rotate(180deg);
+    /* transform: rotate(180deg); */
   }
   .country {
     font: 22px bold;
@@ -137,9 +137,6 @@
     </div>
 
     <div id="immigrationData">
-      <svg id="label">
-        <text x="250" y="-50" style="writing-mode: tb;"> Total immigrants </text>
-      </svg>
       <h2>Country Information</h2>
       <svg id="chartArea" height="300" width="540" style="display: block; margin: 0 auto; background-color: white"/>
 
@@ -455,8 +452,8 @@
                   .duration(1000)
                   .attr("fill", "#FFF575") // --- DEFAULT CIRCLE COLOR
                   .attr("stroke", "gray") // --- DEFAULT CIRCLE STROKE COLOR
-                  .attr("stroke-width", 1.5) // --- DEFAULT CIRCLE STROKE WIDTH
-                  .attr("r", 5) // --- DEFAULT CIRCLE SIZE
+                  .attr("stroke-width", 0.75) // --- DEFAULT CIRCLE STROKE WIDTH
+                  .attr("r", 4) // --- DEFAULT CIRCLE SIZE
                   .attr("fill-opacity", 1) // --- DEFAULT CIRCLE OPACITY
               }
 
@@ -519,7 +516,7 @@
 
     var yearScale = d3.scaleLinear()
       .domain([1980, 2020])
-      .range([50, chartWidth]);
+      .range([75, chartWidth]);
 
     let yearAxis = d3.axisBottom(yearScale)
       .tickValues([1980, 1990, 2000, 2010, 2020])
@@ -550,20 +547,29 @@
 
     linePlot.append("g")
       .attr("class", "immigrationAxis")
-      .attr("transform", "translate(" + 55 + ", " + 20 + ")")
+      .attr("transform", "translate(" + 80 + ", " + 20 + ")")
       .call(immigrantAxis);
 
       let immigrationLines = d3.axisLeft(immigrantScale)
                                .tickValues([0, 50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000])
                                .tickSize(0)
-                               .tickSizeInner(-chartWidth+24)
+                               .tickSizeInner(-chartWidth+50)
                                .tickFormat("");
 
     linePlot.append("g").attr("class", "yGrid")
-      .attr("transform", "translate(" + 60 + "," + 20 + ")")
+      .attr("transform", "translate(" + 87 + "," + 20 + ")")
       .call(immigrationLines);
 
     linePlot.selectAll(".domain").remove();
+
+    linePlot.append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("x", -145)
+          .attr("y", 22)
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "central")
+          .attr("id", "label")
+          .text("Immigrants");
 
   }
 
