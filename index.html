@@ -461,7 +461,7 @@
             .attr("id", "numAttacks")
             .attr("x", 0)
             .attr("y", 0)
-            .text("Number of US Terrorist Attacks Perpetrated by Groups Affiliated with " + country + ": " + numAttacks);
+            .text("Attacks Perpetrated by Groups Affiliated with " + country + ": " + numAttacks);
       });
     }
 
@@ -531,7 +531,7 @@
       .call(yearAxis);
 
     let yearLines = d3.axisBottom(yearScale)
-                      .tickValues([1978.2, 1980, 1990, 2000, 2010, 2020])
+                      .tickValues([1977.7, 1980, 1990, 2000, 2010, 2020])
                       .tickSize(0)
                       .tickSizeInner(-chartHeight+10)
                       .tickFormat("");
